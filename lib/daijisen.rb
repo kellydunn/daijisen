@@ -1,43 +1,52 @@
 $:.unshift(File.dirname(__FILE__)) unless
   $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
 
+=begin
+Yahoo Daijisen Japanese Dictionary Scraper
+Author:  Kelly Dunn
+=end
+
 module Daijisen
-  VERSION = '0.0.1'
-  require 'rexml/document'
+  VERSION = '0.0.5'
+  require 'rubygems'
+  require 'nokogiri'
   require 'open-uri'
   require 'cgi'
 
+  # Query Object.
+  # Effectively scrapes The Yahoo Daijisen Dictionary
+  # And finds definitions of the Japanese String passed in
+  #
+  # TODO: Incorporate SHIFT_JS encoding.  Only UTF-8 works for now.
   class Query
-    @attr_accessor :query
+    attr_accessor :defs, :query
 
     def initialize(query)
-      get_raw_html(query)
+      @query = query
+      @defs = []
+      get_raw_html()
     end
-
-    # Recursive helper function.
-    # Grabs all associated data for this paticular 
-    # definition of the current query.
-    def find_def(x, build)
-      test = x.gets
-      if !test.include? "</span>"
-        return test+find_def(x, build)
+    
+    # Scraping function.
+    def get_raw_html()
+      url = "http://dic.yahoo.co.jp/search?stype=0&ei=UTF-8&dtype=2&p=" + CGI::escape(@query)
+      html = Nokogiri::HTML(open(url))
+      html.css("span.s115").each do |daiji_def|
+        @defs.push(Definition.new(daiji_def))
       end
-      return ""
     end
 
-    def get_raw_html(query)
-      doc = ""
-      url = "http://dic.yahoo.co.jp/search?stype=0&ei=UTF-8&dtype=2&p=" + CGI::escape(query)
-      open(url) do |file|
-        file.each_line do |line|
-          if line.include? "s115"
-            doc+=find_def(file, "")
-          end
-        end
-      end
-      puts doc
-    end
+    private :get_raw_html
+  end
 
-    private :find_def
+  # For delicious Ruby Modularity, Definitions will be OOPified.
+  class Definition
+    attr_accessor :link, :example, :reading
+
+    def initialize(def_html)
+      @link = def_html.css("a")[0]['href']
+      @reading = def_html.css("a")[0].content
+      @example = def_html.css("small")[0].content
+    end
   end
 end
