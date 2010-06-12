@@ -1,0 +1,16 @@
+YAHOO DAIJISEN JAPANSE DICITONARY SCRAPER
+
+Gem created by Kelly Dunn
+existentialsmut.com
+
+This gem is currently in its pre-alpha stage.
+
+Near future releases will include:
+-Iterateable Definition class for each Query
+-Definition to Definition hopping.
+-Memoization
+
+Enjoy!
+
+<3,
+Kelly.
