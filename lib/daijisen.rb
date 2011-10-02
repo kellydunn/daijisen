@@ -7,10 +7,7 @@ Author:  Kelly Dunn
 =end
 
 module Daijisen
-<<<<<<< HEAD
-=======
   VERSION = '0.0.5'
->>>>>>> origin/master
   require 'rubygems'
   require 'nokogiri'
   require 'open-uri'
@@ -39,15 +36,12 @@ module Daijisen
       end
     end
 
-<<<<<<< HEAD
     def each
       @defs.each do |d|
         yield d
       end
     end
 
-=======
->>>>>>> origin/master
     private :get_raw_html
   end
 
