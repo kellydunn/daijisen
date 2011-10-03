@@ -12,14 +12,14 @@ gem install daijisen
 Pass some furigana to a new daijisen query object
 
 ```
-definition = Daijisen::Query.new("漢字")
+query = Daijisen::Query.new("漢字")
 ```
 
 You will now have access to a list of readings, examples, and links to specific definitions
 
 ```
-definition.link
-definition.reading
-definition.example
+query.defs[0].link
+query.defs[0].reading
+query.defs[0].example
 ```
 頑張って
