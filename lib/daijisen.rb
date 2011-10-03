@@ -10,18 +10,21 @@ module Daijisen
 
   # TODO: Incorporate SHIFT_JS encoding.  Only UTF-8 works for now.
   class Query
-    attr_accessor :defs, :query
+    attr_accessor :defs, :query, :url
 
     def initialize(query)
       @query = query
       @defs = []
+      @url = ""
       get_raw_html()
     end
     
     def get_raw_html()
-      url = "http://dic.yahoo.co.jp/search?stype=0&ei=UTF-8&dtype=2&p=" + CGI::escape(@query)
+      @url = "http://dic.yahoo.co.jp/search?stype=0&ei=UTF-8&dtype=2&p=" + CGI::escape(@query)
       html = Nokogiri::HTML(open(url))
-      html.css("span.s115").each do |daiji_def|
+      
+      # TODO Configurable and diggable
+      html.css("#DSm1 ol > li").each do |daiji_def|
         @defs.push(Definition.new(daiji_def))
       end
     end
@@ -37,9 +40,9 @@ module Daijisen
     attr_accessor :link, :example, :reading
 
     def initialize(def_html)
-      @link = def_html.css("a")[0]['href']
-      @reading = def_html.css("a")[0].content
-      @example = def_html.css("small")[0].content
+      @link = def_html.css("h3 a")[0]['href']
+      @reading = def_html.css("h3 a")[0].content
+      @example = def_html.css("div")[0].content
     end
   end
 end
